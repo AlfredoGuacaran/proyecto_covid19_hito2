@@ -20,6 +20,7 @@ async function getToken(email, password) {
 function domLogin() {
   $('#div-form').removeClass('d-block').addClass('d-none');
   $('#contenido').removeClass('d-none').addClass('d-block');
+  $('#home').addClass('active');
 }
 
 // funcion para traer data de todos los paises, retorna array de objetos
@@ -242,6 +243,7 @@ $('#chile').on('click', async function () {
   $('#chartContainer').hide();
   $('#table').hide();
   $('#chile').addClass('active');
+  $('#home').removeClass('active');
   const token = localStorage.getItem('token');
   const confirmados = await getDataChile(token, 'confirmed');
   const muertes = await getDataChile(token, 'deaths');
@@ -277,7 +279,7 @@ function GraficoChile(confir, muer, recu) {
   let confirmados = [];
   let muertos = [];
   let recuperados = [];
-  for (let i=0; i < confir.length; i += 10) {
+  for (let i=0; i < confir.length; i += 30) {
     confirmados.push({
       x: new Date(confir[i].year, confir[i].month, confir[i].day),
       y: confir[i].total
@@ -291,16 +293,16 @@ function GraficoChile(confir, muer, recu) {
       y: recu[i].total
     })
   }
-  
+
   var chart = new CanvasJS.Chart("chartContainer-chile", {
     title: {
-      text: "House Median Price"
+      text: "Situación Covid-19 en Chile"
     },
     axisX: {
       valueFormatString: "DD MM YY"
     },
     axisY2: {
-      title: "Median List Price",
+      title: "N° Casos",
       prefix: "$",
       suffix: "K"
     },
@@ -319,7 +321,7 @@ function GraficoChile(confir, muer, recu) {
       axisYType: "secondary",
       name: "Confirmados",
       showInLegend: true,
-      markerSize: 0,
+      markerSize: 10,
       yValueFormatString: "$#,###k",
       dataPoints: confirmados
     },
@@ -328,7 +330,7 @@ function GraficoChile(confir, muer, recu) {
       axisYType: "secondary",
       name: "Muertos",
       showInLegend: true,
-      markerSize: 0,
+      markerSize: 10,
       yValueFormatString: "$#,###k",
       dataPoints: muertos
     },
@@ -337,7 +339,7 @@ function GraficoChile(confir, muer, recu) {
       axisYType: "secondary",
       name: "Recuperados",
       showInLegend: true,
-      markerSize: 0,
+      markerSize: 10,
       yValueFormatString: "$#,###k",
       dataPoints: recuperados
     }]
@@ -353,3 +355,10 @@ function GraficoChile(confir, muer, recu) {
     chart.render();
   }
 }
+
+$('#home').on('click', function() {
+  $('#chartContainer').show();
+  $('#table').show();
+  $('#chile').removeClass('active');
+  $('#home').addClass('active');
+})
