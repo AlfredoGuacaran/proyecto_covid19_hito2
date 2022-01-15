@@ -56,7 +56,8 @@ async function moreThan10000() {
     );
 
     const moreThan1000Sort = moreThan1000.sort((a, b) => b.deaths - a.deaths);
-    console.log(moreThan1000Sort);
+    // console.log(moreThan1000Sort);
+
     return moreThan1000Sort;
   } catch (error) {
     console.error(error);
@@ -87,7 +88,7 @@ function dataLink() {
 
       const dataCountry = await getCountryData(country);
 
-      console.log(dataCountry);
+      // console.log(dataCountry);
 
       $('#country-modal').modal('show');
       // $('.modal-body').html(
@@ -136,7 +137,7 @@ function iniciarGrafico(dataGrafico, container = 'chartContainer') {
 
   let tituloGrafico = 'Países con Covid19';
   if (dataGrafico.length == 1) tituloGrafico = dataGrafico[0].location;
-  console.log(dataGrafico);
+  // console.log(dataGrafico);
   const chart = new CanvasJS.Chart(container, {
     animationEnabled: true,
     title: {
@@ -156,7 +157,7 @@ function iniciarGrafico(dataGrafico, container = 'chartContainer') {
     },
     data: covidData,
   });
-  console.log(chart);
+  // console.log(chart);
 
   // console.log(chart.width, chart.height);
 
@@ -211,6 +212,7 @@ $('#logout').on('click', function () {
 // funcion de inicio
 (async function init() {
   const token = localStorage.getItem('token');
+  // console.log(token);
   // si no existe token
   if (token == null) {
     return;
@@ -233,3 +235,26 @@ $('#logout').on('click', function () {
     }
   }
 })();
+
+///////////////////////////////////////////////////HITO 2
+
+$('#chile').on('click', async function () {
+  $('#chartContainer').hide();
+  $('#table').hide();
+  $('#chile').addClass('active');
+  const token = localStorage.getItem('token');
+  const confirmados = await getDataChile(token, 'confirmed');
+  const muertes = await getDataChile(token, 'deaths');
+  const recuperados = await getDataChile(token, 'recovered');
+});
+
+/// funcion para las peticiones APIs
+async function getDataChile(token, finalUrl) {
+  const response = await fetch(`http://localhost:3000/api/${finalUrl}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  return data.data;
+}
