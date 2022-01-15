@@ -13,9 +13,10 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-center align-items-center p-5">
-            <div class="col-md-6 d-block" id="div-form">
+    <div class="m-0 p-0">
+        <div class="row justify-content-center align-items-center p-0 m-0">
+            <div class="col-md-6 d-block m-5" id="div-form">
+                <h1>Formulario de Ingreso</h1>
                 <form id="login-form">
                     <div class="form-group">
                         <label>Email address</label>
@@ -28,10 +29,7 @@
                     <button type="submit" class="btn btn-primary">Entrar</button>
                 </form>
             </div>
-
-
-            <div class="col-md-12 d-none" id="contenido">
-
+            <div class="col-md-12 d-none m-0 p-0" id="contenido">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                     <div class="container-fluid">
                         <a class="navbar-brand ms-3" href="#">Covid19</a>
@@ -55,14 +53,9 @@
                         </div>
                     </div>
                 </nav>
+                <div id="chartContainer" class ="m-5 p-2" style="height: 300px"></div>
 
-
-                <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-
-
-
-
-                <table class="table" id="table">
+                <table class="table w-75 m-5 justify-content-center align-items-center" id="table">
                     <thead>
                         <tr>
                             <th scope="col">Pais</th>
@@ -102,9 +95,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
-
-
-    <script src="./assets/scripts.js"></script>
+    <script src="assets/scripts.js"></script>
 </body>
 
 </html>

@@ -246,8 +246,9 @@ $('#chile').on('click', async function () {
   const confirmados = await getDataChile(token, 'confirmed');
   const muertes = await getDataChile(token, 'deaths');
   const recuperados = await getDataChile(token, 'recovered');
-  console.log(confirmados);
-  const esplit1 = confirmados[0].date.split('/')
+  SplitArr(confirmados);
+  SplitArr(muertes);
+  SplitArr(recuperados);
   GraficoChile(confirmados, muertes, recuperados);
 });
 
@@ -261,90 +262,94 @@ async function getDataChile(token, finalUrl) {
   const data = await response.json();
   return data.data;
 }
-
-function AchicarArreglo(arr){
-  let arrSet = [arr[0], arr[90], arr[200]]
-  arrSet = arrSet.map(elem => {
-    const DateSplit = elem.date.split('/');
+// Separar la fecha en distintos elementos año, mes y día
+function SplitArr(arr){
+  arr = arr.map(elem => {
+    let DateSplit = elem.date.split('/');
     elem.year = DateSplit[2]
+    elem.year = 20 + elem.year;
     elem.month = DateSplit[0]
     elem.day = DateSplit[1]
-
   })
 }
-
+// Gráfico de línea para casos Chile
 function GraficoChile(confir, muer, recu) {
+  let confirmados = [];
+  let muertos = [];
+  let recuperados = [];
+  for (let i=0; i < confir.length; i += 10) {
+    confirmados.push({
+      x: new Date(confir[i].year, confir[i].month, confir[i].day),
+      y: confir[i].total
+    })
+    muertos.push({
+      x: new Date(muer[i].year, muer[i].month, muer[i].day),
+      y: muer[i].total
+    })
+    recuperados.push({
+      x: new Date(recu[i].year, recu[i].month, recu[i].day),
+      y: recu[i].total
+    })
+  }
+  
+  var chart = new CanvasJS.Chart("chartContainer-chile", {
+    title: {
+      text: "House Median Price"
+    },
+    axisX: {
+      valueFormatString: "DD MM YY"
+    },
+    axisY2: {
+      title: "Median List Price",
+      prefix: "$",
+      suffix: "K"
+    },
+    toolTip: {
+      shared: true
+    },
+    legend: {
+      cursor: "pointer",
+      verticalAlign: "top",
+      horizontalAlign: "center",
+      dockInsidePlotArea: true,
+      itemclick: toogleDataSeries
+    },
+    data: [{
+      type:"line",
+      axisYType: "secondary",
+      name: "Confirmados",
+      showInLegend: true,
+      markerSize: 0,
+      yValueFormatString: "$#,###k",
+      dataPoints: confirmados
+    },
+    {
+      type: "line",
+      axisYType: "secondary",
+      name: "Muertos",
+      showInLegend: true,
+      markerSize: 0,
+      yValueFormatString: "$#,###k",
+      dataPoints: muertos
+    },
+    {
+      type: "line",
+      axisYType: "secondary",
+      name: "Recuperados",
+      showInLegend: true,
+      markerSize: 0,
+      yValueFormatString: "$#,###k",
+      dataPoints: recuperados
+    }]
+  });
+  chart.render();
 
-var chart = new CanvasJS.Chart("chartContainer-chile", {
-	title: {
-		text: "House Median Price"
-	},
-	axisX: {
-		valueFormatString: "DD MM YY"
-	},
-	axisY2: {
-		title: "Median List Price",
-		prefix: "$",
-		suffix: "K"
-	},
-	toolTip: {
-		shared: true
-	},
-	legend: {
-		cursor: "pointer",
-		verticalAlign: "top",
-		horizontalAlign: "center",
-		dockInsidePlotArea: true,
-		itemclick: toogleDataSeries
-	},
-	data: [{
-		type:"line",
-		axisYType: "secondary",
-		name: "Confirmados",
-		showInLegend: true,
-		markerSize: 0,
-		yValueFormatString: "$#,###k",
-		dataPoints: [
-			{ x: confir[0].date, y: confir[0].total },
-			{ x: confir[90].date, y: confir[90].total },
-			{ x: confir[200].date, y: confir[200].total },
-		]
-	},
-	{
-		type: "line",
-		axisYType: "secondary",
-		name: "Muertos",
-		showInLegend: true,
-		markerSize: 0,
-		yValueFormatString: "$#,###k",
-		dataPoints: [
-			{ x: muer[0].date, y: muer[0].total },
-			{ x: muer[90].date, y: muer[90].total },
-			{ x: muer[200].date, y: muer[200].total },
-		]
-	},
-	{
-		type: "line",
-		axisYType: "secondary",
-		name: "Recuperados",
-		showInLegend: true,
-		markerSize: 0,
-		yValueFormatString: "$#,###k",
-		dataPoints: [
-			{ x: recu[0].date, y: recu[0].total },
-			{ x: recu[90].date, y: recu[90].total },
-			{ x: recu[200].date, y: recu[200].total },
-		]
-	}]
-});
-chart.render();
-
-function toogleDataSeries(e){
-	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-		e.dataSeries.visible = false;
-	} else{
-		e.dataSeries.visible = true;
-	}
-	chart.render();
-}
+  function toogleDataSeries(e){
+    if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+      e.dataSeries.visible = false;
+    } else{
+      e.dataSeries.visible = true;
+    }
+    chart.render();
+  }
 }
