@@ -251,7 +251,7 @@ $('#chile').on('click', async function () {
   SplitArr(confirmados);
   SplitArr(muertes);
   SplitArr(recuperados);
-  GraficoChile(confirmados, muertes, recuperados);
+  ObjetosDatos(confirmados, muertes, recuperados);
 });
 
 /// funcion para las peticiones APIs
@@ -274,8 +274,9 @@ function SplitArr(arr){
     elem.day = DateSplit[1]
   })
 }
-// Gráfico de línea para casos Chile
-function GraficoChile(confir, muer, recu) {
+
+// Función para generar objetos con los datos necesarios para el gráfico (en chart.data.DataPoints)
+function ObjetosDatos(confir, muer, recu) {
   let confirmados = [];
   let muertos = [];
   let recuperados = [];
@@ -293,8 +294,12 @@ function GraficoChile(confir, muer, recu) {
       y: recu[i].total
     })
   }
+  GraficoChile(confirmados, muertos, recuperados)
+}
 
-  var chart = new CanvasJS.Chart("chartContainer-chile", {
+// Gráfico de línea para casos Chile
+function GraficoChile(confir, muer, recu) {
+  let chart = new CanvasJS.Chart("chartContainer-chile", {
     title: {
       text: "Situación Covid-19 en Chile"
     },
@@ -323,7 +328,7 @@ function GraficoChile(confir, muer, recu) {
       showInLegend: true,
       markerSize: 10,
       yValueFormatString: "$#,###k",
-      dataPoints: confirmados
+      dataPoints: confir
     },
     {
       type: "line",
@@ -332,7 +337,7 @@ function GraficoChile(confir, muer, recu) {
       showInLegend: true,
       markerSize: 10,
       yValueFormatString: "$#,###k",
-      dataPoints: muertos
+      dataPoints: muer
     },
     {
       type: "line",
@@ -341,7 +346,7 @@ function GraficoChile(confir, muer, recu) {
       showInLegend: true,
       markerSize: 10,
       yValueFormatString: "$#,###k",
-      dataPoints: recuperados
+      dataPoints: recu
     }]
   });
   chart.render();
@@ -356,6 +361,7 @@ function GraficoChile(confir, muer, recu) {
   }
 }
 
+// Volver a desplegar Home al hacer click en botón Home del navbar
 $('#home').on('click', function() {
   $('#chartContainer').show();
   $('#table').show();
